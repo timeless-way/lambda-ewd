@@ -7,18 +7,18 @@ Created on Tue Feb 20 08:26:36 2018
 """
 
 import pprint
-import json
 from tatsu import parse
-from tatsu.util import asjson
+from hvtools import read_file
 
 def main():
-    with open('grammar1.tatsu', 'r') as input:
-        GRAMMAR=input.read().replace('\n', ' ')
-    ast = parse(GRAMMAR, '3 + 5 * ( 10 - 20 )')
+    GRAMMAR = read_file('grammar1.tatsu')
+    print('Grammar:', GRAMMAR)
+    EXPRESSION = '1 + 2 + 3 + 4'
+    ast = parse(GRAMMAR, EXPRESSION)
     print('PPRINT')
     pprint.pprint(ast, indent=2, width=20)
-    print()
-
-    print('JSON')
-    print(json.dumps(asjson(ast), indent=2))
-    print()
+    print('Type ast', type(ast))
+    print('Expr', EXPRESSION)
+    print('Not pretty', ast)
+    
+main()
