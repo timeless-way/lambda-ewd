@@ -8,20 +8,15 @@ Create a parser object so several expressions can be parsed by the same parser.
 """
 
 import tatsu
-from hvtools import generate_parser
+from hvtools import generate_parser, read_file
 
 GRAMMAR = read_file('grammar1.tatsu')
 EXPRESSION_1 = '1 + 2 + 3 + 4'
 EXPRESSION_2 = '1*(3+4)'
 
+# generate a parseer dynamically:
 parser = tatsu.compile(GRAMMAR)
-#ast = parser.parse(EXPRESSION_1)
-#pprint.pprint(ast, indent=2, width=20)
-#
-#ast = parser.parse(EXPRESSION_2)
-#pprint.pprint(ast, indent=2, width=20)
 
-#p = tatsu.to_python_sourcecode(GRAMMAR)
-#write_file('parser.py', p)
-
+# generate a python module that contains the parser.
+# this module must be imported before it can be used.
 generate_parser('grammar1')
