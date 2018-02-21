@@ -4,6 +4,9 @@
 Created on Tue Feb 20 08:26:36 2018
 
 @author: huub
+
+The basics: read a grammar, parse anexpression.
+Nothing fancy, just to check proper installation.
 """
 
 import pprint

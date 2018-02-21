@@ -1,4 +1,4 @@
-@@grammar::Calc
+@@grammar::Calculator
 
 start = expression $ ;
 
