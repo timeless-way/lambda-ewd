@@ -1,0 +1,25 @@
+@@grammar :: EWD
+
+start = expression $ ;
+
+expression
+    =   identifier
+    |   abstraction
+    |   application
+    ;
+    
+identifier = /[a-zA-Z]/ ;
+
+abstraction
+    =   '\' pattern '->' expression
+    ;
+    
+application 
+    =   '(' fun:expression arg:expression ')'
+    ;
+
+pattern
+    =   identifier
+    |   '*'
+    |   identifier ':' pattern
+    ;
