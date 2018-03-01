@@ -11,11 +11,24 @@ expression
 identifier = /[a-zA-Z]/ ;
 
 abstraction
-    =   '\' pattern '->' expression
+    =   lambda_abstraction
+    |   fun_abstraction
+    ;
+
+mapping_case
+    =   { {pattern}+ '->' expression }*
+    ;
+    
+fun_abstraction
+    =   'fun' >mapping_case 'nuf'
+    ;
+
+lambda_abstraction
+    =   'lambda' >mapping_case 'end'
     ;
     
 application 
-    =   '(' fun:expression arg:expression ')'
+    =   '(' expression "'" expression ')'
     ;
 
 pattern

@@ -8,7 +8,7 @@ Create a parser object so several expressions can be parsed by the same parser.
 """
 
 import tatsu
-from hvtools import generate_parser, read_file
+from hvtools import read_file, generate_python_module
 
 GRAMMAR = read_file('grammar1.tatsu')
 EXPRESSION_1 = '1 + 2 + 3 + 4'
@@ -19,4 +19,4 @@ parser = tatsu.compile(GRAMMAR)
 
 # generate a python module that contains the parser.
 # this module must be imported before it can be used.
-generate_parser('grammar1')
+generate_python_module('grammar1')
