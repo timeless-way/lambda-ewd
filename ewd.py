@@ -7,28 +7,56 @@ Created on Fri Feb 23 00:37:44 2018
 """
 
 import hvtools
+import pprint
+import ewd_parser
 
-"""A Language instance has a grammar and a semantics."""
+'''A Language instance has a grammar and a semantics.'''
 class Language:
     
-    def __init__(self, grammar_file):
-        self.grammar = hvtools.generate_parser_instance(grammar_file)
+    '''
+    Either grammar_file or parser_instance must be specified, but not both!
+    '''
+    def __init__(self, grammar_file=None, parser_instance=None):
+        if grammar_file and parser_instance:
+            self.parser = None
+            print('Error: both grammar_file and parser_instance specified')
+        elif grammar_file:
+            self.parser = hvtools.generate_parser_instance(grammar_file)
+        elif parser_instance:
+            self.parser = parser_instance;
+        else:
+            self.parser = None
+            print('Error: grammar_file or parser_instance')
     
     def parse(self, text):
-        return self.grammar.parse(text)
+        return self.parser.parse(text)
 
-"""
+'''
 A Program has a source and a Language in which the source is written and that
 contains the interpretational semantics of the program.
-"""
-
+'''
 class Program:
     
     def __init__(self, source_file, language):
         self.source = hvtools.read_file(source_file)
         self.language = language
+        self.ast = self.language.parse(self.source)
     
-    def compile(self):
-        self._ast = self.language.parse(self.source)
+    def show_ast(self):
+        pprint.pprint(self.ast, indent=2, width=20)
     
-    
+    def show_source(self):
+        print(self.source)
+
+# Usage examples:
+
+parser = ewd_parser.EwdParser()
+#ewd = Language(parser_instance=parser)
+ewd = Language(grammar_file='ewd')
+
+print('Creating program...\n')
+test = Program('ewd-source/test.ewd', ewd)
+print('Source:')
+test.show_source()
+print('AST:')
+test.show_ast()

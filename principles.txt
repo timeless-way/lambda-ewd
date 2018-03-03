@@ -1,0 +1,28 @@
+"""
+Created on Thu Mar  1 11:37:22 2018
+
+@author: huub
+"""
+
+0. Some design principles in random order.
+
+1. Every 10 years I design a new programming language and its compiler/interpreter.
+
+1984 -> Portable Logo
+1994 -> First incarnation of Prospero
+2007 -> Remake of Prospero in Java, using OO implemetation techniques
+2018 -> EWD
+
+2. After its creation in 2007, java-prospero has been substantially extended and redesigned. It now contains many innovative programming concepts but tends to become a bit overloaded.
+
+3. Design of Prospero always focussed on concepts and never on efficient implementation.
+This proved to be a fruitful approach.
+
+4. Many things were learned from Prospero but the sheer size of the language and the remnants of not-so-successful experiments clutter up. It is time to streamline the ideas and try to collect them into a new consistent language.
+
+5. During the past decade two developments were made that influence our choices of language technology:
+
+A. -> Python went from obsure scripting language to a mature mainstream language
+B. -> In the field of compiler construction packrat parsing and PEG grammars became dominant.
+
+6. During development of Prospero 2 the focus has always been much more on language design and implementation and much less on using the language (and not at all on documenting the language). This will be the case during a new linguistic project as well. For that reason, there will be no attempt to produce a stand alone version of ewd, rather, only a few components will be provided that can be used in an iPython terminal or a Jupyter Notebook.

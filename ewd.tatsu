@@ -3,12 +3,12 @@
 start = expression $ ;
 
 expression
-    =   identifier
-    |   abstraction
+    =   abstraction
+    |   identifier
     |   application
     ;
     
-identifier = /[a-zA-Z]/ ;
+identifier = /[a-zA-Z](a-zA-Z0-9)*/ ;
 
 abstraction
     =   lambda_abstraction
@@ -16,15 +16,15 @@ abstraction
     ;
 
 mapping_case
-    =   { {pattern}+ '->' expression }*
+    =   mc:({pattern}+ '->' expression)
     ;
     
 fun_abstraction
-    =   'fun' >mapping_case 'nuf'
+    =   fa:('fun' {mapping_case}* 'nuf')
     ;
 
 lambda_abstraction
-    =   'lambda' >mapping_case 'end'
+    =   la:('lambda' {mapping_case}* 'end')
     ;
     
 application 
