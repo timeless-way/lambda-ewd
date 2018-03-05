@@ -14,6 +14,11 @@ Primary   <- '(' Additive ')' | Decimal
 Decimal   <- 0..9
 """
 
+"""
+if tracing is set to True, a line will be printed for each syntatctic function call.
+This line contains the name of the function and the text to be parsed.
+WARNING: The output will be overwhelming!
+"""
 tracing = False
 
 """
@@ -22,6 +27,11 @@ full_backtrack = False -> previous resultas are used again (kind of packratting!
 """
 full_backtrack = True
 
+"""
+Count the number of calls to syntatctic functions. This is printed at the end 
+of the analyis.
+WARNING: This gives a feeling for the notion of exponential complexity.
+"""
 call_count = 0
 
 class ParserResult:
