@@ -16,20 +16,22 @@ class Language:
     '''
     Either grammar_file or parser_instance must be specified, but not both!
     '''
-    def __init__(self, grammar_file=None, parser_instance=None):
+    def __init__(self, grammar_file=None, parser_instance=None, semantics=None):
         if grammar_file and parser_instance:
             self.parser = None
             print('Error: both grammar_file and parser_instance specified')
         elif grammar_file:
             self.parser = hvtools.generate_parser_instance(grammar_file)
         elif parser_instance:
-            self.parser = parser_instance;
+            self.parser = parser_instance
         else:
             self.parser = None
             print('Error: grammar_file or parser_instance')
+        self.semantics = semantics
     
-    def parse(self, text):
-        return self.parser.parse(text)
+
+    def parse(self, text, **kwargs):
+        return self.parser.parse(text, semantics=self.semantics, **kwargs)
 
 '''
 A Program has a source and a Language in which the source is written and that

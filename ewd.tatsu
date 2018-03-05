@@ -2,37 +2,37 @@
 
 start = expression $ ;
 
-expression
-    =   abstraction
-    |   identifier
-    |   application
-    ;
+expression =   
+|   abstraction
+|   identifier
+|   application
+;
     
 identifier = /[a-zA-Z](a-zA-Z0-9)*/ ;
 
-abstraction
-    =   lambda_abstraction
-    |   fun_abstraction
-    ;
+abstraction =   
+|   lambda_abstraction
+|   fun_abstraction
+;
 
-mapping_case
-    =   mc:({pattern}+ '->' expression)
-    ;
+mapping_case =
+    mc:({pattern}+ '->' expression)
+;
     
-fun_abstraction
-    =   fa:('fun' {mapping_case}* 'nuf')
-    ;
+fun_abstraction =
+    fa:('fun' {mapping_case}* 'nuf')
+;
 
-lambda_abstraction
-    =   la:('lambda' {mapping_case}* 'end')
-    ;
+lambda_abstraction =
+    la:('lambda' {mapping_case}* 'end')
+;
     
-application 
-    =   '(' expression "'" expression ')'
-    ;
+application =
+    '(' expression "'" expression ')'
+;
 
-pattern
-    =   identifier
-    |   '*'
-    |   identifier ':' pattern
-    ;
+pattern =   
+|   identifier
+|   '*'
+|   identifier ':' pattern
+;
