@@ -14,6 +14,16 @@ Primary   <- '(' Additive ')' | Decimal
 Decimal   <- 0..9
 """
 
+tracing = False
+
+"""
+full_backtrack = True -> all strings are reparsed if an alternative failed
+full_backtrack = False -> previous resultas are used again (kind of packratting!)
+"""
+full_backtrack = True
+
+call_count = 0
+
 class ParserResult:
     
     def __init__(self, result, rest):
@@ -21,6 +31,7 @@ class ParserResult:
         self.parse_value = result
 
 def pAdditive(text):
+    global full_backtrack
     # First alternative of the grammar
     trace('pAdditive 1', text)
     multitive = pMultitive(text)
@@ -33,10 +44,12 @@ def pAdditive(text):
                 return ParserResult(n, res.next_text)
     # Second alternative
     trace('pAdditive 2', text)
-    multitive = pMultitive(text) # Do this again for backtracking!
+    if full_backtrack:
+        multitive = pMultitive(text) # Do this again for backtracking!
     return multitive
 
 def pMultitive(text):
+    global full_backtrack
     # First alternative of the grammar
     trace('pMultitative 1', text)
     primary = pPrimary(text)
@@ -49,7 +62,8 @@ def pMultitive(text):
                 return ParserResult(n, res.next_text)
     # Second alternative
     trace('pMultitative 2', text)
-    primary = pPrimary(text) # Do this again for backtracking!
+    if full_backtrack:
+        primary = pPrimary(text) # Do this again for backtracking!
     return primary
 
 def pPrimary(text):
@@ -77,14 +91,16 @@ def pDecimal(text):
         return None
 
 def root(text):
+    global call_count
     print(text)
     res = pAdditive(text)
     if res and len(res.next_text) == 0:
         print('Parse OK:', res.parse_value)
     elif res and len(res.next_text) > 0:
-        print('Parse OK, but some text was not parsed:', res.next_text)
+        print('Parse OK, but some text was not parsed:', res.next_text, 'value:', res.parse_value)
     else:
         print('Parse error')
+    print('call count:', call_count)
     print('-----------------------------------------------------------')
 
 def check_initial_char(s, c):
@@ -92,20 +108,23 @@ def check_initial_char(s, c):
 
 tracing = False
 def trace(s, exp):
-   global tracing
+   global tracing, call_count
+   call_count += 1
    if tracing:
        print(s, '\t', exp)
 
 root('4')
 
-tracing = True
+tracing = False
 root('3+6')
 tracing = False
 
 root('3*(4+5)')
+
 tracing = False
 root('(4*5)+7*(3+1)')
 tracing = False
+
 root('3+(4*5)+7*(3+1)')
 root('3*')
 root('(3+5')
