@@ -35,20 +35,20 @@ full_backtrack = False -> previous resultas are used again (kind of packratting!
 full_backtrack = False
 
 """
-Count the number of calls to syntatctic functions. This is printed at the end 
+Count the number of calls to syntatctic functions. This is printed at the end
 of the analyis.
 WARNING: This gives a feeling for the notion of exponential complexity.
 """
 call_count = 0
+memo_table = {}
 
 class ParserResult:
-    
+
     def __init__(self, result, rest):
         self.next_text = rest
         self.parse_value = result
 
 def pAdditive(text):
-    global full_backtrack, memo_table
     if memoize and memo_table['pAdditive'][text]:
         return memo_table['pAdditive'][text]
     # First alternative of the grammar
@@ -71,7 +71,6 @@ def pAdditive(text):
     return multitive
 
 def pMultitive(text):
-    global full_backtrack, memo_table
     if memoize and memo_table['pMultitive'][text]:
         return memo_table['pMultitive'][text]
     # First alternative of the grammar
@@ -94,7 +93,6 @@ def pMultitive(text):
     return primary
 
 def pPrimary(text):
-    global full_backtrack, memo_table
     if memoize and memo_table['pPrimary'][text]:
         return memo_table['pPrimary'][text]
     # First alternative of the grammar
@@ -113,7 +111,6 @@ def pPrimary(text):
     return decimal
 
 def pDecimal(text):
-    global full_backtrack, memo_table
     if memoize and memo_table['pDecimal'][text]:
         return memo_table['pDecimal'][text]
     trace('pDecimal', text)
@@ -143,14 +140,14 @@ def root(text):
     print('call count:', call_count)
     print('-----------------------------------------------------------')
 
-def check_initial_char(s, c):
-    return len(s) > 0 and s[0] == c
+def check_initial_char(text, char):
+    return len(text) > 0 and text[0] == char
 
-def trace(s, exp):
-   global tracing, call_count
-   call_count += 1
-   if tracing:
-       print(s, '\t', exp)
+def trace(text, exp):
+    global call_count
+    call_count += 1
+    if tracing:
+        print(text, '\t', exp)
 
 def init_table(text):
     global tracing, memo_table
@@ -160,7 +157,7 @@ def init_table(text):
     memo_table['pMultitive'] = {}.fromkeys(keys)
     memo_table['pPrimary'] = {}.fromkeys(keys)
     memo_table['pDecimal'] = {}.fromkeys(keys)
-    
+
     tracing = False
     for text in reversed(keys):
         pAdditive(text)
@@ -168,7 +165,7 @@ def init_table(text):
         pPrimary(text)
         pDecimal(text)
     tracing = True
-    
+
 root('4')
 #
 #tracing = True

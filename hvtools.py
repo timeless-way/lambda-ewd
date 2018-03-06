@@ -10,8 +10,8 @@ Handige tools van HvT voor het werken met tatsu grammatica's
 import tatsu
 
 def read_file(name):
-    with open(name, 'r') as input:
-        contents = input.read()
+    with open(name, 'r') as input_file:
+        contents = input_file.read()
     return contents
 
 def write_file(name, contents):
@@ -23,8 +23,8 @@ def generate_python_module(basename):
     filename = basename + '_parser.py'
     classname = basename[0].upper() + basename[1:]
     grammar = read_file(grammarname)
-    p = tatsu.to_python_sourcecode(grammar, classname)
-    write_file(filename, p)
+    parser_text = tatsu.to_python_sourcecode(grammar, classname)
+    write_file(filename, parser_text)
 
 def generate_parser_instance(basename):
     grammarname = basename + '.tatsu'

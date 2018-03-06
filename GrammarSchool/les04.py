@@ -41,7 +41,6 @@ class ParserResult:
         self.parse_value = result
 
 def pAdditive(text):
-    global full_backtrack
     # First alternative of the grammar
     trace('pAdditive 1', text)
     multitive = pMultitive(text)
@@ -59,7 +58,6 @@ def pAdditive(text):
     return multitive
 
 def pMultitive(text):
-    global full_backtrack
     # First alternative of the grammar
     trace('pMultitative 1', text)
     primary = pPrimary(text)

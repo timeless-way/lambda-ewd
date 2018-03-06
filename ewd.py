@@ -12,7 +12,7 @@ import ewd_parser
 
 '''A Language instance has a grammar and a semantics.'''
 class Language:
-    
+
     '''
     Either grammar_file or parser_instance must be specified, but not both!
     '''
@@ -28,7 +28,7 @@ class Language:
             self.parser = None
             print('Error: grammar_file or parser_instance')
         self.semantics = semantics
-    
+
 
     def parse(self, text, **kwargs):
         return self.parser.parse(text, semantics=self.semantics, **kwargs)
@@ -38,15 +38,15 @@ A Program has a source and a Language in which the source is written and that
 contains the interpretational semantics of the program.
 '''
 class Program:
-    
+
     def __init__(self, source_file, language):
         self.source = hvtools.read_file(source_file)
         self.language = language
         self.ast = self.language.parse(self.source)
-    
+
     def show_ast(self):
         pprint.pprint(self.ast, indent=2, width=20)
-    
+
     def show_source(self):
         print(self.source)
 
