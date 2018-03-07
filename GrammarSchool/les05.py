@@ -14,6 +14,7 @@ Multitive <- Primary '*' Multitive | Primary
 Primary   <- '(' Additive ')' | Decimal
 Decimal   <- 0..9
 """
+from les04 import ParserResult, pAdditive, pMultitive, pPrimary, pDecimal
 
 """
 Set memoize to True to enjoy the benefits of memoization.
@@ -42,95 +43,40 @@ WARNING: This gives a feeling for the notion of exponential complexity.
 call_count = 0
 memo_table = {}
 
-class ParserResult:
-
-    def __init__(self, result, rest):
-        self.next_text = rest
-        self.parse_value = result
-
-def pAdditive(text):
+def p5Additive(text):
     if memoize and memo_table['pAdditive'][text]:
         return memo_table['pAdditive'][text]
-    # First alternative of the grammar
-    trace('pAdditive 1', text)
-    multitive = pMultitive(text)
-    if multitive:
-        rest = multitive.next_text
-        if check_initial_char(rest, '+'):
-            res = pAdditive(rest[1:])
-            if res:
-                n = multitive.parse_value + res.parse_value
-                pr = ParserResult(n, res.next_text)
-                memo_table['pAdditive'][text] = pr
-                return pr
-    # Second alternative
-    trace('pAdditive 2', text)
-    if full_backtrack:
-        multitive = pMultitive(text) # Do this again for backtracking!
-    memo_table['pAdditive'][text] = multitive
-    return multitive
+    result = pAdditive(text)
+    memo_table['pAdditive'][text] = result
+    return result
 
-def pMultitive(text):
+def p5Multitive(text):
     if memoize and memo_table['pMultitive'][text]:
         return memo_table['pMultitive'][text]
-    # First alternative of the grammar
-    trace('pMultitative 1', text)
-    primary = pPrimary(text)
-    if primary:
-        rest = primary.next_text
-        if check_initial_char(rest, '*'):
-            res = pMultitive(rest[1:])
-            if res:
-                n = primary.parse_value * res.parse_value
-                pr = ParserResult(n, res.next_text)
-                memo_table['pMultitive'][text] = pr
-                return pr
-    # Second alternative
-    trace('pMultitative 2', text)
-    if full_backtrack:
-        primary = pPrimary(text) # Do this again for backtracking!
-    memo_table['pMultitive'][text] = primary
-    return primary
+    result = pMultitive(text)
+    memo_table['pMultitive'][text] = result
+    return result
 
-def pPrimary(text):
+def p5Primary(text):
     if memoize and memo_table['pPrimary'][text]:
         return memo_table['pPrimary'][text]
-    # First alternative of the grammar
-    trace('pPrimary 1', text)
-    if check_initial_char(text, '('):
-        additive = pAdditive(text[1:])
-        if additive:
-            if check_initial_char(additive.next_text, ')'):
-                pr = ParserResult(additive.parse_value, additive.next_text[1:])
-                memo_table['pPrimary'][text] = pr
-                return pr
-    # Second alternative
-    trace('pPrimary 2', text)
-    decimal = pDecimal(text)
-    memo_table['pPrimary'][text] = decimal
-    return decimal
+    result = pPrimary(text)
+    memo_table['pPrimary'][text] = result
+    return result
 
-def pDecimal(text):
+def p5Decimal(text):
     if memoize and memo_table['pDecimal'][text]:
         return memo_table['pDecimal'][text]
-    trace('pDecimal', text)
-    if len(text) == 0:
-        #print('Expected 0..9 but found nothing')
-        return None
-    elif text[0] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
-        pr = ParserResult(int(text[0]), text[1:])
-        memo_table['pDecimal'][text] = pr
-        return pr
-    else:
-        #print('Expected 0..9 but found', text[0])
-        return None
+    result = pPrimary(text)
+    memo_table['pDecimal'][text] = result
+    return result
 
 def root(text):
     global call_count
     print(text)
     call_count = 0
     init_table(text)
-    res = pAdditive(text)
+    res = p5Additive(text)
     if res and len(res.next_text) == 0:
         print('Parse OK:', res.parse_value)
     elif res and len(res.next_text) > 0:
@@ -139,15 +85,6 @@ def root(text):
         print('Parse error')
     print('call count:', call_count)
     print('-----------------------------------------------------------')
-
-def check_initial_char(text, char):
-    return len(text) > 0 and text[0] == char
-
-def trace(text, exp):
-    global call_count
-    call_count += 1
-    if tracing:
-        print(text, '\t', exp)
 
 def init_table(text):
     global tracing, memo_table
