@@ -14,7 +14,7 @@ Multitive <- Primary '*' Multitive | Primary
 Primary   <- '(' Additive ')' | Decimal
 Decimal   <- 0..9
 """
-from les04 import ParserResult, pAdditive, pMultitive, pPrimary, pDecimal
+from les04 import ParserResult, pAdditive, pMultitive, pPrimary, pDecimal, call_count
 
 """
 Set memoize to True to enjoy the benefits of memoization.
@@ -40,7 +40,7 @@ Count the number of calls to syntatctic functions. This is printed at the end
 of the analyis.
 WARNING: This gives a feeling for the notion of exponential complexity.
 """
-call_count = 0
+#call_count = 0
 memo_table = {}
 
 def p5Additive(text):
@@ -71,7 +71,7 @@ def p5Decimal(text):
     memo_table['pDecimal'][text] = result
     return result
 
-def root(text):
+def root5(text):
     global call_count
     print(text)
     call_count = 0
@@ -95,26 +95,58 @@ def init_table(text):
     memo_table['pPrimary'] = {}.fromkeys(keys)
     memo_table['pDecimal'] = {}.fromkeys(keys)
 
-    tracing = False
-    for text in reversed(keys):
-        pAdditive(text)
-        pMultitive(text)
-        pPrimary(text)
-        pDecimal(text)
-    tracing = True
+#    tracing = False
+#    for text in reversed(keys):
+#        p5Additive(text)
+#        p5Multitive(text)
+#        p5Primary(text)
+#        p5Decimal(text)
+#    tracing = True
+    
+def show_table(table):
+    row_names = sorted(list(table.keys()))
+    col_names = build_col_names(table[row_names[0]])
+    text = col_names[0]
 
-root('4')
-#
-#tracing = True
-#root('3+6')
-#tracing = False
-#
-#root('3*(4+5)')
+    print_table_header(col_names, text)
+    for rn in row_names:
+        print(rn + ':\t', end='')
+        for cn in col_names:
+            parse_result = table[rn][cn]
+            if parse_result:
+                index = str(string_to_index(parse_result.next_text, text))
+                value = str(parse_result.parse_value)
+                print('<' + value + ',' + index + '>' + '\t', end='')
+            else:
+                print('-\t', end='')
+        print()
 
-#tracing = False
-root('(4*5)+7*(3+1)')
-#tracing = False
-#
-root('3+(4*5)+7*(3+1)')
-#root('3*')
-#root('(3+5')
+def build_col_names(col_dict):
+    col_keys = col_dict.keys()
+    col_names = [''] * len(col_keys)
+    for ck in col_keys:
+        col_names[len(ck)-1] = ck
+    col_names.reverse()
+    return col_names
+
+def print_table_header(col_names, text):
+    print()
+    print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    print('table for ' + text)
+    print()
+    print('\t'*2, end='')
+    for cn in col_names:
+        print(string_to_index(cn, text), end='\t')
+    print()
+
+def string_to_index(string, text):
+    return len(text) - len(string)
+
+def index_to_string(index, text):
+    return text[index:]
+    
+
+#root5('3+(4*5)+7*(3+1)')
+root5('(3*2)*(2+7)')
+
+show_table(memo_table)

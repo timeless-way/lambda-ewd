@@ -90,12 +90,12 @@ def pPrimary(text):
 def pDecimal(text):
     trace('pDecimal', text)
     if len(text) == 0:
-        print('Expected 0..9 but found nothing')
+        #print('Expected 0..9 but found nothing')
         return None
     elif text[0] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
         return ParserResult(int(text[0]), text[1:])
     else:
-        print('Expected 0..9 but found', text[0])
+        #print('Expected 0..9 but found', text[0])
         return None
 
 def root(text):
@@ -122,22 +122,22 @@ def trace(s, exp):
    if tracing:
        print(s, '\t', exp)
 
-root('1')
-root('1+1')
-root('1+1+1')
-root('1+1+1+1')
-root('1+1+1+1+1')
-root('1+1+1+1+1+1')
-root('1+1+1+1+1+1+1')
-root('1+1+1+1+1+1+1+1')
-root('(1)')
-root('((1))')
-root('(((1)))')
-root('((((1))))')
-root('(((((1)))))')
-root('((((((1))))))')
-
-#root('4')
+#root('1')
+#root('1+1')
+#root('1+1+1')
+#root('1+1+1+1')
+#root('1+1+1+1+1')
+#root('1+1+1+1+1+1')
+#root('1+1+1+1+1+1+1')
+#root('1+1+1+1+1+1+1+1')
+#root('(1)')
+#root('((1))')
+#root('(((1)))')
+#root('((((1))))')
+#root('(((((1)))))')
+#root('((((((1))))))')
+#
+##root('4')
 #
 #tracing = False
 #root('3+6')
