@@ -21,11 +21,30 @@ class Deriv:
         ident = derivs.index(self)
         return derivs[ident+1]
     
+    def ident(self):
+        return derivs.index(self)
+    
+    def as_string(self, result):
+        return result.as_string() if result else "None\t"
+            
+    
+    def show(self):
+        strAdditive  = "A: " + self.as_string(self.dvAdditive)
+        strMultitive = "M: " + self.as_string(self.dvMultitive)
+        strPrimary   = "P: " + self.as_string(self.dvPrimary)
+        strDecimal   = "D: " + self.as_string(self.dvDecimal)
+        string = "\t".join([strAdditive, strMultitive, strPrimary, strDecimal, self.char])
+        print("<" + str(self.ident()) + "\t" + string + ">")
+    
 class Result:
     
     def __init__(self, result, next_deriv):
         self.result = result
         self.continuation_deriv = next_deriv
+    
+    def as_string(self):
+        return "(" + str(self.result) + ", " + str(self.continuation_deriv.ident()) + ")"
+    
 
 def pAdditive(deriv):
     if deriv.dvAdditive:
@@ -103,11 +122,15 @@ def parse(text):
     for char in text:
         derivs[i] = Deriv(char)
         i += 1
-    derivs[len(text)] = Deriv(None)
+    derivs[len(text)] = Deriv('')
     pAdditive(derivs[0])
     return derivs
 
-text = '(5+4*3)*9'
+def show_table():
+    for d in derivs:
+        d.show()
+
+text = '(5+4*3)*(9+8+7+6)'
 derivs = parse(text)
 print(text, '=', derivs[0].dvAdditive.result)
 
