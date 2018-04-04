@@ -17,13 +17,45 @@ c_expression =
     |   'letrec' c_definition_list 'in' c_expression
     |   'case' c_primary_expression 'of' c_alternative_list
     |   '\\' c_variable_list '.' c_expression
-    |   {c_primary_expression}+
+    |   c_expr1
+    ;
+
+c_expr1 =
+        '|'%{ c_expr2 }*
+    ;
+
+c_expr2 =
+        '&'%{ c_expr3 }
+    ;
+
+c_expr3 =
+        (c_relop)%{ c_expr4 }
+    ;
+
+c_expr4 =
+        '+'%{ c_expr5 }
+    ;
+
+c_expr5 =
+        c_expr6 [ '-' c_expr6 ]
+    ;
+
+c_expr6 =
+        '*'%{ c_expr7 }
+    ;
+
+c_expr7 =
+        c_expr8 [ '/' c_expr8 ]
+    ;
+
+c_expr8 =
+        { c_primary_expression }+
     ;
 
 c_primary_expression =
         c_variable
     |   c_number
-    |   'Pack{' c_number ',' c_number '}'
+    |   'Pack' '{' c_number ',' c_number '}'
     |   '(' c_expression ')'
     ;
 
@@ -43,22 +75,8 @@ c_alternative =
         '<' c_number '>' c_variable_list '->' c_expression
     ;
 
-c_binop =
-        c_arithop
-    |   c_relop
-    |   c_boolop
-    ;
-
-c_arithop =
-        '+' | '-' | '*' | '/'
-    ;
-    
 c_relop =
         '<' | '<=' | '==' | '~=' | '>=' | '>'
-    ;
-    
-c_boolop =
-        '&' | '|'
     ;
 
 c_variable_list =
