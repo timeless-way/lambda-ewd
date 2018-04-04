@@ -1,4 +1,2 @@
-fun
-    x y z -> x
-    y -> y
-nuf
+g a b c =
+    f a b (g a) (f (h a))

@@ -8,7 +8,7 @@ Created on Fri Feb 23 00:37:44 2018
 
 import hvtools
 import pprint
-import ewd_parser
+#import ewd_parser
 
 '''A Language instance has a grammar and a semantics.'''
 class Language:
@@ -52,12 +52,15 @@ class Program:
 
 # Usage examples:
 
-parser = ewd_parser.EwdParser()
+#parser = ewd_parser.EwdParser()
 #ewd = Language(parser_instance=parser)
-ewd = Language(grammar_file='ewd')
 
-print('Creating program...\n')
+print('Creating language:... ', end='')
+ewd = Language(grammar_file='ewd')
+print('OK')
+print('Creating program... ', end='')
 test = Program('ewd-source/test.ewd', ewd)
+print('OK')
 print('Source:')
 test.show_source()
 print('AST:')

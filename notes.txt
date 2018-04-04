@@ -39,7 +39,8 @@ Pass this instance to the Language constructor:
 
 ewd = Language(parser_instance = parser)
 
-NOTE: Language(...) has two paramaters of which EXACTLY ONE must be
-specified: either use Language(parser_instance=...) or
-Language(grammar_file=...).
+NOTE: Language(...) has two paramaters of which EXACTLY ONE must be specified: either use Language(parser_instance=...) or Language(grammar_file=...).
 
+2018-03-26T17:50
+
+The syntax of Core has to be formulated in PEG terms and written in tatsu. Two problems must be addressed: the first production of expr is left recursive and 

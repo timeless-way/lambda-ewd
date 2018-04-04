@@ -25,7 +25,7 @@ class Deriv:
         return derivs.index(self)
     
     def as_string(self, result):
-        return result.as_string() if result else "None\t"
+        return result.as_string() if result else "\t"
             
     
     def show(self):
@@ -117,7 +117,7 @@ def check_initial_char(deriv, char):
 
 def parse(text):
     global derivs
-    derivs = [0] * (len(text) + 1)
+    derivs = [None] * (len(text) + 1)
     i = 0
     for char in text:
         derivs[i] = Deriv(char)
@@ -130,7 +130,8 @@ def show_table():
     for d in derivs:
         d.show()
 
-text = '(5+4*3)*(9+8+7+6)'
-derivs = parse(text)
-print(text, '=', derivs[0].dvAdditive.result)
+def packrat(text):
+    derivs = parse(text)
+    print(text, '=', derivs[0].dvAdditive.result)
+    show_table()
 

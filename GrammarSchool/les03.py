@@ -5,15 +5,12 @@ Created on Wed Feb 21 09:13:44 2018
 
 @author: huub
 
-Create a python module for the parser and use that to parse ecpressions.
+Create a python module for the parser and use that to parse expressions.
 
 Run tatsu --outfile calcparser.py grammar1.tatsu in a terminal to 
 generate the parser.
 
-Alternatively, use 
-
-hvtools.generate_parser(basename) which has a similar effect
-
+Alternatively, use hvtools.generate_parser(basename) which has a similar effect
 from the previous lesson to generate the parser directly from python.
 See also hvtools.generate_parser(basename)
 """

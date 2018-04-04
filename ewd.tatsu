@@ -1,38 +1,74 @@
-@@grammar :: EWD
+@@grammar:: EWD
 
-start = expression $ ;
+c_program = 
+        c_super_combinator_list $
+    ;
 
-expression =   
-|   abstraction
-|   identifier
-|   application
-;
+c_super_combinator_list = 
+        ';'%{c_super_combinator}+
+    ;
+                                 
+c_super_combinator = 
+        c_variable_list '=' c_expression
+    ;
+
+c_expression =
+        'let' c_definition_list 'in' c_expression
+    |   'letrec' c_definition_list 'in' c_expression
+    |   'case' c_primary_expression 'of' c_alternative_list
+    |   '\\' c_variable_list '.' c_expression
+    |   {c_primary_expression}+
+    ;
+
+c_primary_expression =
+        c_variable
+    |   c_number
+    |   'Pack{' c_number ',' c_number '}'
+    |   '(' c_expression ')'
+    ;
+
+c_definition_list =
+        ';'%{c_definition}+
+    ;
+
+c_definition =
+        c_variable '=' c_expression
+    ;
+
+c_alternative_list =
+        ';'%{c_alternative}+
+    ;
+
+c_alternative =
+        '<' c_number '>' c_variable_list '->' c_expression
+    ;
+
+c_binop =
+        c_arithop
+    |   c_relop
+    |   c_boolop
+    ;
+
+c_arithop =
+        '+' | '-' | '*' | '/'
+    ;
     
-identifier = /[a-zA-Z](a-zA-Z0-9)*/ ;
-
-abstraction =   
-|   lambda_abstraction
-|   fun_abstraction
-;
-
-mapping_case =
-    mc:({pattern}+ '->' expression)
-;
+c_relop =
+        '<' | '<=' | '==' | '~=' | '>=' | '>'
+    ;
     
-fun_abstraction =
-    fa:('fun' {mapping_case}* 'nuf')
-;
+c_boolop =
+        '&' | '|'
+    ;
 
-lambda_abstraction =
-    la:('lambda' {mapping_case}* 'end')
-;
-    
-application =
-    '(' expression "'" expression ')'
-;
+c_variable_list =
+        { c_variable }*
+    ;
 
-pattern =   
-|   identifier
-|   '*'
-|   identifier ':' pattern
-;
+c_variable =
+        /[a-zA-Z]([a-zA-Z0-9_])*/
+    ;
+
+c_number =
+        /[0-9]+/
+    ;
