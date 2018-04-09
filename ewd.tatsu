@@ -9,15 +9,35 @@ c_super_combinator_list =
     ;
                                  
 c_super_combinator = 
-        c_variable_list '=' c_expression
+        c_lhs '=' c_expression
+    ;
+
+c_lhs =
+        c_variable [ c_variable_list ]
     ;
 
 c_expression =
-        'let' c_definition_list 'in' c_expression
-    |   'letrec' c_definition_list 'in' c_expression
-    |   'case' c_primary_expression 'of' c_alternative_list
-    |   '\\' c_variable_list '.' c_expression
+        c_letrec_expression
+    |   c_let_expression
+    |   c_case_expression
+    |   c_lambda_expression
     |   c_expr1
+    ;
+
+c_let_expression =
+        'let' deflist:c_definition_list 'in' expr:c_expression
+    ;
+
+c_letrec_expression =
+        'letrec' deflist:c_definition_list 'in' expr:c_expression
+    ;
+
+c_case_expression =
+        'case' expr:c_expression 'of' alts:c_alternative_list
+    ;
+
+c_lambda_expression = 
+        '\\' pars:c_variable_list '.' body:c_expression
     ;
 
 c_expr1 =
@@ -49,14 +69,14 @@ c_expr7 =
     ;
 
 c_expr8 =
-        { c_primary_expression }+
+        { c_atomic_expression }+
     ;
-
-c_primary_expression =
+    
+c_atomic_expression = 
         c_variable
     |   c_number
-    |   'Pack' '{' c_number ',' c_number '}'
-    |   '(' c_expression ')'
+    |   c_constructor
+    |   c_parentheses
     ;
 
 c_definition_list =
@@ -68,11 +88,11 @@ c_definition =
     ;
 
 c_alternative_list =
-        ';'%{c_alternative}+
+        '[]'%{c_alternative}+
     ;
 
 c_alternative =
-        '<' c_number '>' c_variable_list '->' c_expression
+        '<' tag:c_number '>' vars:c_variable_list '->' expr:c_expression
     ;
 
 c_relop =
@@ -83,7 +103,16 @@ c_variable_list =
         { c_variable }*
     ;
 
+c_constructor =
+        'Pack' '{' tag:c_number ',' arity:c_number '}'
+    ;
+
+c_parentheses =
+        '(' expr:c_expression ')'
+    ;
+
 c_variable =
+        !/let\W|letrec\W|in\W|case\W|of\W|Pack\W/
         /[a-zA-Z]([a-zA-Z0-9_])*/
     ;
 

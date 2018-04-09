@@ -8,7 +8,7 @@ Created on Fri Feb 23 00:37:44 2018
 
 import hvtools
 import pprint
-#import ewd_parser
+import codegenerator as gen
 
 '''A Language instance has a grammar and a semantics.'''
 class Language:
@@ -56,12 +56,15 @@ class Program:
 #ewd = Language(parser_instance=parser)
 
 print('Creating language:... ', end='')
-ewd = Language(grammar_file='ewd')
+ewd = Language(grammar_file='ewd', semantics=gen.CodeGenerator())
 print('OK')
 print('Creating program... ', end='')
 test = Program('ewd-source/test.ewd', ewd)
 print('OK')
 print('Source:')
 test.show_source()
-print('AST:')
-test.show_ast()
+#print('AST:')
+#test.show_ast()
+
+for sc in test.ast:
+    print(sc[-1])
