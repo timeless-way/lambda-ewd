@@ -72,13 +72,14 @@ class CodeGenerator:
         if ast_len == 1:
             return ast[0]
         operator = EVar(ast[1])
-        ap = EAp(fun=operator, arg=ast[0])
-        i = 2
+        ap1 = EAp(fun=operator, arg=ast[0])
+        ap2 = EAp(fun=ap1, arg=ast[2])
+        i = 4
         while i < ast_len:
-            arg = ast[i]
-            ap = EAp(fun=ap, arg=arg)
+            ap1 = EAp(fun=operator, arg=ap2)
+            ap2 = EAp(fun=ap1, arg=ast[i])
             i = i+2
-        return ap
+        return ap2
     
     def create_function_application(self, ast):
         if not isinstance(ast, list):

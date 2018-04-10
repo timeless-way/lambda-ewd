@@ -13,7 +13,7 @@ c_super_combinator =
     ;
 
 c_lhs =
-        c_variable [ c_variable_list ]
+        c_name [ c_name_list ]
     ;
 
 c_expression =
@@ -102,6 +102,10 @@ c_relop =
 c_variable_list =
         { c_variable }*
     ;
+    
+c_name_list =
+        { c_name }*
+    ;
 
 c_constructor =
         'Pack' '{' tag:c_number ',' arity:c_number '}'
@@ -111,9 +115,13 @@ c_parentheses =
         '(' expr:c_expression ')'
     ;
 
-c_variable =
+c_name =
         !/let\W|letrec\W|in\W|case\W|of\W|Pack\W/
         /[a-zA-Z]([a-zA-Z0-9_])*/
+    ;
+
+c_variable =
+        c_name
     ;
 
 c_number =

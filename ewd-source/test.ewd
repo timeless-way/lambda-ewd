@@ -1,3 +1,4 @@
+main = 3 + 4 + 5;
 main = Pack{1,0};
 f x = \y.y+x;
-g x = case x of <0> -> 1 [] <1> p q -> p
+g x y z = case x of <0> -> let a=3+x in a-1 [] <1> p q -> p

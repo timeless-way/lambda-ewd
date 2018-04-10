@@ -19,14 +19,14 @@ class Language:
     def __init__(self, grammar_file=None, parser_instance=None, semantics=None):
         if grammar_file and parser_instance:
             self.parser = None
-            print('Error: both grammar_file and parser_instance specified')
+            print('Error: both grammar_file and parser_instance specified.')
         elif grammar_file:
             self.parser = hvtools.generate_parser_instance(grammar_file)
         elif parser_instance:
             self.parser = parser_instance
         else:
             self.parser = None
-            print('Error: grammar_file or parser_instance')
+            print('Error: No grammar_file or parser_instance specified.')
         self.semantics = semantics
 
 
@@ -67,4 +67,4 @@ test.show_source()
 #test.show_ast()
 
 for sc in test.ast:
-    print(sc[-1])
+    print(sc)
