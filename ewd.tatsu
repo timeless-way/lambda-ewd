@@ -9,11 +9,11 @@ c_super_combinator_list =
     ;
                                  
 c_super_combinator = 
-        c_lhs '=' c_expression
+        lhs:c_lhs '=' expr:c_expression
     ;
 
 c_lhs =
-        c_name [ c_name_list ]
+        name:c_name pars:[ c_name_list ]
     ;
 
 c_expression =
@@ -84,7 +84,7 @@ c_definition_list =
     ;
 
 c_definition =
-        c_variable '=' c_expression
+        name:c_variable '=' val:c_expression
     ;
 
 c_alternative_list =
