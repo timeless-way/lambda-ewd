@@ -6,9 +6,10 @@ Created on Fri Feb 23 00:37:44 2018
 @author: huub
 """
 
-import hvtools
+import hvtools as ht
 import pprint
-import codegenerator as gen
+import codegenerator as cg
+import prettyprinter as pp
 
 '''A Language instance has a grammar and a semantics.'''
 class Language:
@@ -21,7 +22,7 @@ class Language:
             self.parser = None
             print('Error: both grammar_file and parser_instance specified.')
         elif grammar_file:
-            self.parser = hvtools.generate_parser_instance(grammar_file)
+            self.parser = ht.generate_parser_instance(grammar_file)
         elif parser_instance:
             self.parser = parser_instance
         else:
@@ -40,7 +41,7 @@ contains the interpretational semantics of the program.
 class Program:
 
     def __init__(self, source_file, language):
-        self.source = hvtools.read_file(source_file)
+        self.source = ht.read_file(source_file)
         self.language = language
         self.ast = self.language.parse(self.source)
 
@@ -56,7 +57,7 @@ class Program:
 #ewd = Language(parser_instance=parser)
 
 print('Creating language:... ', end='')
-ewd = Language(grammar_file='ewd', semantics=gen.CodeGenerator())
+ewd = Language(grammar_file='ewd', semantics=cg.CodeGenerator())
 print('OK')
 print('Creating program... ', end='')
 test = Program('ewd-source/test.ewd', ewd)
@@ -66,5 +67,5 @@ test.show_source()
 #print('AST:')
 #test.show_ast()
 
-for sc in test.ast:
-    print(sc)
+for sc in test.ast.supercombinators:
+    print(pp.display(sc))

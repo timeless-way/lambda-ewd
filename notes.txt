@@ -41,6 +41,28 @@ ewd = Language(parser_instance = parser)
 
 NOTE: Language(...) has two paramaters of which EXACTLY ONE must be specified: either use Language(parser_instance=...) or Language(grammar_file=...).
 
-2018-03-26T17:50
+2018-04-17T23:00
 
-The syntax of Core has to be formulated in PEG terms and written in tatsu. Two problems must be addressed: the first production of expr is left recursive and 
+The Core grammer had to be modified in three dfferent ways to make it compatible with tatsu PEG requirements:
+
+1. The Lester grammar as given in Lester is ambiguous, as the semi-colon in the rule 
+alts -> alt1 ';' ... ';' altn
+is indistinguishable from the one between super combinators:
+program -> sc1 ';' ... ';' scn
+
+This anbiguity can besolved in various ways, I have chosen to modufy the lexical structure by repalcing the semicolon between alterbatives by the Dijkstra block '[]'.
+
+2. The Lester grammar is incomplete as it only specifies the precedence of infix operators in a table. This precedence structure has to be expanded into the grammar rules, giving rise to no less than 8 additional rules.
+
+3. Tatsu specifies semantic functions on a per-rule base, and not on a per-alternative base. In order to define semantics at an appropriate level, many rules of the form
+lhs -> rhs-expansion-1 | rhs-expansion-2 | rhs-expansion-3, 
+where each expansion is a sequence of (non)terminals must be rewritten into the following form:
+
+lhs -> nonterminal-1 | nonterminal-2 | nonterminal-3;
+nonterminal-1 = rhs-expansion-1;
+nonterminal-2 = rhs-expansion-2;
+nonterminal-3 = rhs-expansion-3;
+
+
+
+where each nonterminal-i is a new nonterminal, not occuring in the original grammar.
