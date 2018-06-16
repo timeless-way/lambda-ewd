@@ -41,6 +41,8 @@ ewd = Language(parser_instance = parser)
 
 NOTE: Language(...) has two paramaters of which EXACTLY ONE must be specified: either use Language(parser_instance=...) or Language(grammar_file=...).
 
+NOTE (2018-06-16): In order for this to work, the start rule of the grammer _must_ be called start. Although there are several ways tot specify another start rule in Tatsu, none of these seemed to work. This might be a bug in Tatsu. However, the workaround is easy, just declare a rule "start = c_program $" and change to "c_program = c_combinator_list" (without the $) and you're done.
+
 2018-04-17T23:00
 
 The Core grammer had to be modified in three dfferent ways to make it compatible with tatsu PEG requirements:

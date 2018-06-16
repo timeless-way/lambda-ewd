@@ -1,7 +1,11 @@
 @@grammar:: EWD
 
+start =
+        c_program $
+    ;
+
 c_program = 
-        c_super_combinator_list $
+        c_super_combinator_list
     ;
 
 c_super_combinator_list = 

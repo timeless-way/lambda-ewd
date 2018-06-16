@@ -16,7 +16,7 @@ IAppend = collections.namedtuple('IAppend', 'left right')
 
 def append(*contents):
     if len(contents) == 0:
-        return []
+        return INil()
     elif len(contents) == 1:
         return contents[0]
     else:
