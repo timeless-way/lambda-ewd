@@ -7,7 +7,7 @@ Created on Wed Jun  6 16:33:57 2018
 """
 
 import collections
-import prettyprinter as pp
+import prettyprinter as pretty
 
 _EProg   = collections.namedtuple('EProg', 'supercombinators')
 _ESc     = collections.namedtuple('ESc', 'lhs expr')
@@ -24,65 +24,67 @@ _EAlt    = collections.namedtuple('EAlt', 'tag vars expr')
 
 class Prog(_EProg):
     
-    def pp(self):
-        return(pp.IStr('Prog'))
+    def pp(self, packed=False):
+        return(pretty.IStr('Prog'))
 
 class Sc(_ESc):
     
-    def pp(self):
-        return pp.append(self.lhs.pp(), pp.IStr('='), self.expr.pp())
+    def pp(self, packed=False):
+        return pretty.append(self.lhs.pp(packed), pretty.IStr('='), self.expr.pp(packed))
 
 class Lhs(_ELhs):
     
-    def pp(self):
+    def pp(self, packed=False):
         if len(self.pars) == 0:
-            return pp.IStr(self.name)
+            return pretty.IStr(self.name)
         else:
-            parlist = [pp.IStr(par) for par in self.pars]
-            return pp.IAppend(pp.IStr(self.name), pp.append(*parlist))
+            parlist = [pretty.IStr(par) for par in self.pars]
+            return pretty.IAppend(pretty.IStr(self.name), pretty.append(*parlist))
 
 class Bind(_EBind):
     
-    def pp(self):
-        return pp.IStr('Bind')
+    def pp(self, packed=False):
+        return pretty.IStr('Bind')
 
 class Var(_EVar):
     
-    def pp(self):
-        return pp.IStr(self.ident)
+    def pp(self, packed=False):
+        return pretty.IStr(self.ident)
 
 class Num(_ENum):
     
-    def pp(self):
-        return pp.IStr(str(self.intVal))
+    def pp(self, packed=False):
+        return pretty.IStr(str(self.intVal))
 
 class Constr(_EConstr):
     
-    def pp(self):
-        return pp.IStr('Constr')
+    def pp(self, packed=False):
+        return pretty.IStr('Constr')
 
 class Ap(_EAp):
     
-    def pp(self):
-        return pp.IAppend(self.fun.pp(), self.arg.pp())
+    def pp(self, packed=False):
+        pre = pretty.IStr('(') if packed else pretty.INil()
+        post = pretty.IStr(')') if packed else pretty.INil()
+        return pretty.append(pre, self.fun.pp(False), self.arg.pp(True), post)
 
 class Let(_ELet):
     
-    def pp(self):
-        return pp.IStr('Let')
+    def pp(self, packed=False):
+        return pretty.IStr('Let')
 
 class Case(_ECase):
     
-    def pp(self):
-        return pp.IStr('Case')
+    def pp(self, packed=False):
+        return pretty.IStr('Case')
 
 class Lam(_ELam):
     
-    def pp(self):
-        return pp.IStr('Lam')
+    def pp(self, pre='', post=''):
+        return pretty.IStr('Lam')
 
 class Alt(_EAlt):
     
-    def pp(self):
-        return pp.IStr('Alt')
+    def pp(self, pre='', post=''):
+        return pretty.IStr('Alt')
 

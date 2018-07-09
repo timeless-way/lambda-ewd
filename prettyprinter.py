@@ -7,14 +7,12 @@ Created on Mon Apr  9 17:16:28 2018
 """
 import collections
 
-def pretty(expr):
-    return expr.pp()
-
 INil = collections.namedtuple('INil', '')
 IStr = collections.namedtuple('IStr', 'contents')
 IAppend = collections.namedtuple('IAppend', 'left right')
 
 def append(*contents):
+    contents = list(filter(lambda c: not isinstance(c, INil), contents))
     if len(contents) == 0:
         return INil()
     elif len(contents) == 1:
@@ -38,4 +36,4 @@ def flatten(iseq):
         return 'flatten: ???' + str(iseq)
 
 def display(expr):
-    return flatten(pretty(expr))
+    return flatten(expr.pp(False))

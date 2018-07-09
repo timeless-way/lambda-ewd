@@ -9,7 +9,7 @@ Created on Fri Feb 23 00:37:44 2018
 import hvtools as ht
 import pprint
 import codegenerator as cg
-import prettyprinter as pp
+import prettyprinter as pretty
 import ewd_parser as parser
 
 '''A Language instance has a grammar and a semantics.'''
@@ -59,11 +59,12 @@ class Program:
 
 print('Creating language:... ', end='')
 #ewd = Language(grammar_file='ewd', semantics=cg.CodeGenerator())
-ewd_parser = parser.EwdParser()
-ewd = Language(parser_instance=ewd_parser, semantics=cg.CodeGenerator())
+ewd = Language(parser_instance=parser.EwdParser(), semantics=cg.CodeGenerator())
 print('OK')
 print('Creating program... ', end='')
-test = Program('ewd-source/test.ewd', ewd)
+test = Program('ewd-source/standard-prelude.ewd', ewd)
+#test = Program('ewd-source/test.ewd', ewd)
+
 print('OK')
 print('Source:')
 test.show_source()
@@ -71,4 +72,4 @@ test.show_source()
 #test.show_ast()
 
 for sc in test.ast.supercombinators:
-    print(pp.display(sc))
+    print(pretty.display(sc))
