@@ -10,7 +10,7 @@ import hvtools as ht
 import pprint
 import codegenerator as cg
 import prettyprinter as pretty
-import ewd_parser as parser
+import ewd_parser
 
 '''A Language instance has a grammar and a semantics.'''
 class Language:
@@ -54,12 +54,12 @@ class Program:
 
 # Usage examples:
 
-#parser = ewd_parser.EwdParser()
+parser = ewd_parser.EwdParser()
 #ewd = Language(parser_instance=parser)
 
 print('Creating language:... ', end='')
 #ewd = Language(grammar_file='ewd', semantics=cg.CodeGenerator())
-ewd = Language(parser_instance=parser.EwdParser(), semantics=cg.CodeGenerator())
+ewd = Language(parser_instance=parser, semantics=cg.CodeGenerator())
 print('OK')
 print('Creating program... ', end='')
 test = Program('ewd-source/standard-prelude.ewd', ewd)

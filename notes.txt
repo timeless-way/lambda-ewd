@@ -2,36 +2,25 @@ Notes (on Structured Programming?)
 
 2018-03-03T12:22 
 
-A Program consists of a source text and a Language in which the source
-is written. The source text is usually supplied as a file, but it is
-entirely read in memory before any processing begins.
+A Program consists of a source text and a Language in which the source is written. The source text is usually supplied as a file, but it is entirely read in memory before any processing begins.
 
-A Language consists of its syntax and semantics. (Currently there is
-no semantics yet, working on that.) The syntax is provided as a parser
-instance. This instance contains a method parse that creates an AST for
-the source.
+A Language consists of its syntax and semantics. (Currently there is no semantics yet, working on that.) The syntax is provided as a parser instance. This instance contains a method parse that creates an AST for the source.
 
-Parser instances are created using tatsu (FKA grako) in one of two
-possible ways. Both ways use the same syntax specification ewd.tatsu. The
-method Language.__init__ is adapted to both techniques.
+Parser instances are created using tatsu (FKA grako) in one of two possible ways. Both ways use the same syntax specification ewd.tatsu. The method Language.__init__ is adapted to both techniques.
 
-The first technique creates a tatsu model in runtime. This is very
-useful for quick experiments with the grammar. Create a language using
+The first technique creates a tatsu model in runtime. This is very useful for quick experiments with the grammar. Create a language using
 
 ewd = Language(grammar_file='ewd')
 
 The Language constructor will generate a tatsu model that is
 subsequently used to parse sources.
 
-The second technique offers more flexibility at the cost of a more
-complex build structure.
+The second technique offers more flexibility at the cost of a more complex build structure.
 
 First, generate a python module for the grammar:
 hvtools.generate_python_module('ewd');
 
-Import this module in ewd.py (the module is called ewd_parser).
-ewd_parser contains a class EwdParser. Create an instance of this class
-and pass it to the Language constructor:
+Import this module in ewd.py (the module is called ewd_parser). ewd_parser contains a class EwdParser. Create an instance of this class and pass it to the Language constructor:
 
 parser = ewd_parser.EwdParser()
 
@@ -64,7 +53,5 @@ lhs -> nonterminal-1 | nonterminal-2 | nonterminal-3;
 nonterminal-1 = rhs-expansion-1;
 nonterminal-2 = rhs-expansion-2;
 nonterminal-3 = rhs-expansion-3;
-
-
 
 where each nonterminal-i is a new nonterminal, not occuring in the original grammar.
