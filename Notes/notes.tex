@@ -12,6 +12,52 @@
 \author{Huub van Thienen}
 \maketitle
 
+\section{Design principles}
+
+\begin{enumerate}
+\item Some design principles in random order.
+
+\item Every 10 years I design a new programming language and its compiler/interpreter.
+
+\begin{list}{}{}
+\item 1984: Portable Logo
+\item 1994: First incarnation of Prospero
+\item 2007: Remake of Prospero in Java, using OO implemetation techniques
+\item 2018: EWD
+\end{list}
+
+\item After its creation in 2007, java-prospero has been substantially extended and 
+redesigned. It now contains many innovative programming concepts but tends to become 
+a bit overloaded.
+
+\item Design of Prospero always focussed on concepts and never on efficient implementation.
+This proved to be a fruitful approach.
+
+\item Many things were learned from Prospero but the sheer size of the language and 
+the remnants of not-so-successful experiments clutter up. It is time to streamline the 
+ideas and try to collect them into a new consistent language.
+
+\item During the past decade two developments were made that influence our choices of 
+language technology:
+
+\begin{list}{}{}
+\item A: Python went from obsure scripting language to a mature mainstream language
+
+\item B: In the field of compiler construction packrat parsing and PEG grammars 
+became dominant.
+\end{list}
+
+\item During development of Prospero 2 the focus has always been much more on language 
+design and implementation and much less on using the language (and not at all on 
+documenting the language). This will be the case during a new linguistic project as well. For that reason, there will be no attempt to produce a stand alone version of ewd, rather, only a few components will be provided that can be used in an iPython terminal or a Jupyter Notebook
+
+\item It must be really, trully, absolutely lazy! Perhaps reading Simon Peyton Jones 
+stuff will help with implementing a lazy evaluator.
+
+\end{enumerate}
+
+\section{Implementation notes}
+
 \paragraph{2018-03-03T12:22}
 
 A \emph{Program} consists of a source text and a Language in which the source is written. 
@@ -41,8 +87,9 @@ Create an instance of this class and pass it to the Language constructor:
 Pass this instance to the Language constructor:
 \verb|ewd = Language(parser_instance = parser)|
 
-\paragraph{NOTE:} \verb|Language(...)| has two paramaters of which EXACTLY ONE must be specified: either use\\
-\verb|Language(parser_instance=...)| or \verb|Language(grammar_file=...)|.
+\paragraph{NOTE:} \verb|Language(...)| has two paramaters of which EXACTLY ONE must be specified: either use
+\verb|Language(parser_instance=...)| \\
+or \verb|Language(grammar_file=...)|.
 
 \paragraph{NOTE (2018-06-16):} In order for this to work, the start rule of the grammer \textbf{must} be called \verb|start|. 
 Although there are several ways tot specify another start rule in Tatsu, none of these seemed to work. 
@@ -55,7 +102,7 @@ The Core grammer had to be modified in three dfferent ways to make it compatible
 
 \begin{enumerate}
 
-\item The Lester grammar as given in Lester is ambiguous, as the semi-colon in the rule 
+\item The Lester grammar as given in Lester is ambiguous, as the semicolon in the rule 
 \verb|alts -> alt1 ';' ... ';' altn|
 is indistinguishable from the one between super combinators:
 \verb|program -> sc1 ';' ... ';' scn|.
