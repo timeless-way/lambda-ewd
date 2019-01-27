@@ -1,0 +1,81 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[english]{babel}
+\usepackage{fancyvrb}
+\usepackage{amsmath, amssymb}
+\usepackage[euler-digits,euler-hat-accent]{eulervm}
+
+\usepackage{newpxtext}
+
+\begin{document}
+
+\title{Notes (on Structured Programming?)}
+\author{Huub van Thienen}
+\maketitle
+
+\paragraph{2018-03-03T12:22}
+
+A \emph{Program} consists of a source text and a Language in which the source is written. 
+The source text is usually supplied as a file, but it is entirely read in memory before any processing begins.
+A \emph{Language} consists of its syntax and semantics. (Currently there is no semantics yet, working on that). 
+The syntax is provided as a parser instance.
+This instance contains a method parse that creates an AST for the source.
+
+Parser instances are created using tatsu (FKA grako) in one of two possible ways. 
+Both ways use the same syntax specification ewd.tatsu. 
+The method \verb|Language.__init__| is adapted to both techniques.
+
+The first technique creates a tatsu model in runtime. 
+This is very useful for quick experiments with the grammar. 
+Create a language using
+
+\verb|ewd = Language(grammar_file='ewd')|
+The Language constructor will generate a tatsu model that is subsequently used to parse sources.
+
+The second technique offers more flexibility at the cost of a more complex build structure.
+First, generate a python module for the grammar:\\
+\verb|hvtools.generate_python_module('ewd');|
+Import this module in \verb|ewd.py| (the module is called \verb|ewd_parser)|. 
+\verb|ewd_parser| contains a class \verb|EwdParser|. 
+Create an instance of this class and pass it to the Language constructor:
+\verb|parser = ewd_parser.EwdParser()|
+Pass this instance to the Language constructor:
+\verb|ewd = Language(parser_instance = parser)|
+
+\paragraph{NOTE:} \verb|Language(...)| has two paramaters of which EXACTLY ONE must be specified: either use\\
+\verb|Language(parser_instance=...)| or \verb|Language(grammar_file=...)|.
+
+\paragraph{NOTE (2018-06-16):} In order for this to work, the start rule of the grammer \textbf{must} be called \verb|start|. 
+Although there are several ways tot specify another start rule in Tatsu, none of these seemed to work. 
+This might be a bug in Tatsu. 
+However, the workaround is easy, just declare a rule \verb|"start = c_program $"| and change to \verb|"c_program = c_combinator_list"| (without the \$) and you're done.
+
+\paragraph{2018-04-17T23:00}
+
+The Core grammer had to be modified in three dfferent ways to make it compatible with tatsu PEG requirements:
+
+\begin{enumerate}
+
+\item The Lester grammar as given in Lester is ambiguous, as the semi-colon in the rule 
+\verb|alts -> alt1 ';' ... ';' altn|
+is indistinguishable from the one between super combinators:
+\verb|program -> sc1 ';' ... ';' scn|.
+
+This anbiguity can besolved in various ways, I have chosen to modify the lexical structure by replacing the semicolon between alterbatives by the Dijkstra block \verb|[]|.
+
+\item The Lester grammar is incomplete as it only specifies the precedence of infix operators in a table. This precedence structure has to be expanded into the grammar rules, giving rise to no less than 8 additional rules.
+
+\item Tatsu specifies semantic functions on a per-rule base, and not on a per-alternative base. In order to define semantics at an appropriate level, many rules of the form
+\verb|lhs -> rhs-expansion-1 | rhs-expansion-2 | rhs-expansion-3|, 
+where each expansion is a sequence of (non)terminals must be rewritten into the following form:
+
+\begin{Verbatim}
+lhs -> nonterminal-1 | nonterminal-2 | nonterminal-3;
+nonterminal-1 = rhs-expansion-1;
+nonterminal-2 = rhs-expansion-2;
+nonterminal-3 = rhs-expansion-3;|
+\end{Verbatim}
+where each nonterminal-i is a new nonterminal, not occuring in the original grammar.
+\end{enumerate}
+
+
+\end{document}
