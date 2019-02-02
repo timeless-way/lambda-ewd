@@ -7,84 +7,86 @@ Created on Wed Jun  6 16:33:57 2018
 """
 
 import collections
-import prettyprinter as pretty
+import prettyprinter as ppr
 
-_EProg   = collections.namedtuple('EProg', 'supercombinators')
-_ESc     = collections.namedtuple('ESc', 'lhs expr')
-_ELhs    = collections.namedtuple('ELhs', 'name pars')
-_EBind   = collections.namedtuple('EBind', 'name val')
-_EVar    = collections.namedtuple('EVar', 'ident')
-_ENum    = collections.namedtuple('ENum', 'intVal')
-_EConstr = collections.namedtuple('EConstr', 'tag arity')
-_EAp     = collections.namedtuple('EAp', 'fun arg')
-_ELet    = collections.namedtuple('ELet', 'isRec deflist expr')
-_ECase   = collections.namedtuple('ECase', 'expr alts')
-_ELam    = collections.namedtuple('ELam', 'par body')
-_EAlt    = collections.namedtuple('EAlt', 'tag vars expr')
+EProg   = collections.namedtuple('EProg', 'supercombinators')
+ESc     = collections.namedtuple('ESc', 'lhs expr')
+ELhs    = collections.namedtuple('ELhs', 'name pars')
+EBind   = collections.namedtuple('EBind', 'name val')
+EVar    = collections.namedtuple('EVar', 'ident')
+ENum    = collections.namedtuple('ENum', 'intVal')
+EConstr = collections.namedtuple('EConstr', 'tag arity')
+EAp     = collections.namedtuple('EAp', 'fun arg')
+ELet    = collections.namedtuple('ELet', 'isRec deflist expr')
+ECase   = collections.namedtuple('ECase', 'expr alts')
+ELam    = collections.namedtuple('ELam', 'par body')
+EAlt    = collections.namedtuple('EAlt', 'tag vars expr')
 
-class Prog(_EProg):
+class Prog(EProg):
     
-    def pp(self, packed=False):
-        return(pretty.IStr('Prog'))
+  def pp(self, packed=False):
+    sc = self.supercombinators
+    ppsc = ([ppr.IAppend(c.pp(), ppr.IStr(';\n')) for c in sc])
+    return ppr.append(*ppsc)
 
-class Sc(_ESc):
+class Sc(ESc):
     
-    def pp(self, packed=False):
-        return pretty.append(self.lhs.pp(packed), pretty.IStr('='), self.expr.pp(packed))
+  def pp(self, packed=False):
+    return ppr.append(self.lhs.pp(packed), ppr.IStr('='), self.expr.pp(packed))
 
-class Lhs(_ELhs):
+class Lhs(ELhs):
     
-    def pp(self, packed=False):
-        if len(self.pars) == 0:
-            return pretty.IStr(self.name)
-        else:
-            parlist = [pretty.IStr(par) for par in self.pars]
-            return pretty.IAppend(pretty.IStr(self.name), pretty.append(*parlist))
+  def pp(self, packed=False):
+    if len(self.pars) == 0:
+      return ppr.IStr(self.name)
+    else:
+      parlist = [ppr.IWord(par) for par in self.pars]
+      return ppr.IAppend(ppr.IWord(self.name), ppr.append(*parlist))
 
-class Bind(_EBind):
+class Bind(EBind):
     
-    def pp(self, packed=False):
-        return pretty.IStr('Bind')
+  def pp(self, packed=False):
+    return ppr.IStr('Bind')
+   
+class Var(EVar):
+    
+  def pp(self, packed=False):
+    return ppr.IWord(self.ident)
 
-class Var(_EVar):
+class Num(ENum):
     
-    def pp(self, packed=False):
-        return pretty.IStr(self.ident)
+  def pp(self, packed=False):
+    return ppr.IWord(str(self.intVal))
 
-class Num(_ENum):
+class Constr(EConstr):
     
-    def pp(self, packed=False):
-        return pretty.IStr(str(self.intVal))
+  def pp(self, packed=False):
+    return ppr.IStr('Constr')
 
-class Constr(_EConstr):
+class Ap(EAp):
     
-    def pp(self, packed=False):
-        return pretty.IStr('Constr')
+  def pp(self, packed=False):
+    pre = ppr.IStr('(') if packed else ppr.INil()
+    post = ppr.IStr(')') if packed else ppr.INil()
+    return ppr.append(pre, self.fun.pp(False), self.arg.pp(True), post)
 
-class Ap(_EAp):
+class Let(ELet):
     
-    def pp(self, packed=False):
-        pre = pretty.IStr('(') if packed else pretty.INil()
-        post = pretty.IStr(')') if packed else pretty.INil()
-        return pretty.append(pre, self.fun.pp(False), self.arg.pp(True), post)
+  def pp(self, packed=False):
+    return ppr.IStr('Let')
 
-class Let(_ELet):
+class Case(ECase):
     
-    def pp(self, packed=False):
-        return pretty.IStr('Let')
+  def pp(self, packed=False):
+    return ppr.IStr('Case')
 
-class Case(_ECase):
+class Lam(ELam):
     
-    def pp(self, packed=False):
-        return pretty.IStr('Case')
+  def pp(self, pre='', post=''):
+    return ppr.IStr('Lam')
 
-class Lam(_ELam):
+class Alt(EAlt):
     
-    def pp(self, pre='', post=''):
-        return pretty.IStr('Lam')
-
-class Alt(_EAlt):
-    
-    def pp(self, pre='', post=''):
-        return pretty.IStr('Alt')
+  def pp(self, pre='', post=''):
+    return ppr.IStr('Alt')
 

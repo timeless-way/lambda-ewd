@@ -9,31 +9,38 @@ import collections
 
 INil = collections.namedtuple('INil', '')
 IStr = collections.namedtuple('IStr', 'contents')
+IWord = collections.namedtuple('IWord', 'contents')
 IAppend = collections.namedtuple('IAppend', 'left right')
 
 def append(*contents):
-    contents = list(filter(lambda c: not isinstance(c, INil), contents))
-    if len(contents) == 0:
-        return INil()
-    elif len(contents) == 1:
-        return contents[0]
-    else:
-        tree = IAppend(contents[0], contents[1])
-        for c in contents[2:]:
-            tree = IAppend(tree, c)
-        return tree
+  contents = list(filter(lambda c: not isinstance(c, INil), contents))
+  if len(contents) == 0:
+    return INil()
+  elif len(contents) == 1:
+    return contents[0]
+  else:
+    tree = IAppend(contents[0], contents[1])
+    for c in contents[2:]:
+      tree = IAppend(tree, c)
+  return tree
 
-def flatten(iseq):
-    if isinstance(iseq, INil):
-        return ''
-    elif isinstance(iseq, IStr):
-        return iseq.contents
-    elif isinstance(iseq, IAppend):
-        right_string = flatten(iseq.right)
-        left_string = flatten(iseq.left)
-        return left_string + ' ' + right_string
-    else:
-        return 'flatten: ???' + str(iseq)
+def flatten(iseq_list):
+  if (len(iseq_list) == 0):
+    return ''
+  iseq = iseq_list[0]
+  iseq_list_tail = iseq_list[1:]
+  if isinstance(iseq, INil):
+    return flatten(iseq_list_tail)
+  elif isinstance(iseq, IStr):
+    return iseq.contents + flatten(iseq_list_tail)
+  elif isinstance(iseq, IWord):
+    return iseq.contents + ' ' + flatten(iseq_list_tail)
+  elif isinstance(iseq, IAppend):
+    return flatten([iseq.left] + [iseq.right] + iseq_list_tail)
+  else:
+    print('Unknown type for iseq ' + iseq)
+    return flatten(iseq_list_tail)
+
 
 def display(expr):
-    return flatten(expr.pp(False))
+  return flatten([expr.pp(False)])
