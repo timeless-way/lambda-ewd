@@ -50,5 +50,4 @@ def flatten(iseq_list, separator):
 
 def display(expr):
   print_struct = expr.pp()
-  pprint.pprint(print_struct)
   return flatten([print_struct], False)
