@@ -94,7 +94,7 @@ class CodeGenerator:
       ap1 = tn.Ap(fun=operator, arg=ap2)
       ap2 = tn.Ap(fun=ap1, arg=ast[i])
       i = i+2
-      return ap2
+    return ap2
 
   def create_function_application(self, ast):
     if not isinstance(ast, list):

@@ -32,13 +32,13 @@ class Prog(EProg):
 class Sc(ESc):
     
   def pp(self, packed=False):
-    return ppr.append(self.lhs.pp(packed), ppr.IStr('='), self.expr.pp(packed))
+    return ppr.append(self.lhs.pp(), ppr.IWord('='), self.expr.pp())
 
 class Lhs(ELhs):
     
   def pp(self, packed=False):
     if len(self.pars) == 0:
-      return ppr.IStr(self.name)
+      return ppr.IWord(self.name)
     else:
       parlist = [ppr.IWord(par) for par in self.pars]
       return ppr.IAppend(ppr.IWord(self.name), ppr.append(*parlist))
@@ -82,11 +82,11 @@ class Case(ECase):
 
 class Lam(ELam):
     
-  def pp(self, pre='', post=''):
+  def pp(self, packed=False):
     return ppr.IStr('Lam')
 
 class Alt(EAlt):
     
-  def pp(self, pre='', post=''):
+  def pp(self, packed=False):
     return ppr.IStr('Alt')
 

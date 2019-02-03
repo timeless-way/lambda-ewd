@@ -6,6 +6,7 @@ Created on Mon Apr  9 17:16:28 2018
 @author: huub
 """
 import collections
+import pprint
 
 INil = collections.namedtuple('INil', '')
 IStr = collections.namedtuple('IStr', 'contents')
@@ -24,23 +25,30 @@ def append(*contents):
       tree = IAppend(tree, c)
   return tree
 
-def flatten(iseq_list):
+def flatten(iseq_list, separator):
   if (len(iseq_list) == 0):
     return ''
   iseq = iseq_list[0]
   iseq_list_tail = iseq_list[1:]
   if isinstance(iseq, INil):
-    return flatten(iseq_list_tail)
+    return flatten(iseq_list_tail, separator)
   elif isinstance(iseq, IStr):
-    return iseq.contents + flatten(iseq_list_tail)
+    return iseq.contents + flatten(iseq_list_tail, False)
   elif isinstance(iseq, IWord):
-    return iseq.contents + ' ' + flatten(iseq_list_tail)
+    s1 = flatten(iseq_list_tail, True)
+    if separator:
+      s0 = ' '
+    else:
+      s0 = ''
+    return s0 + iseq.contents + s1
   elif isinstance(iseq, IAppend):
-    return flatten([iseq.left] + [iseq.right] + iseq_list_tail)
+    return flatten([iseq.left] + [iseq.right] + iseq_list_tail, separator)
   else:
     print('Unknown type for iseq ' + iseq)
-    return flatten(iseq_list_tail)
+    return flatten(iseq_list_tail, separator)
 
 
 def display(expr):
-  return flatten([expr.pp(False)])
+  print_struct = expr.pp()
+  pprint.pprint(print_struct)
+  return flatten([print_struct], False)

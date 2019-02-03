@@ -1,4 +1,2 @@
-main = f x ;
-f x = g y z ;
-g z = 5 ;
-h x y z = x
+f x = a*b + c*d;
+g x = 0
