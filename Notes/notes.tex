@@ -51,8 +51,13 @@ became dominant.
 design and implementation and much less on using the language (and not at all on 
 documenting the language). This will be the case during a new linguistic project as well. For that reason, there will be no attempt to produce a stand alone version of ewd, rather, only a few components will be provided that can be used in an iPython terminal or a Jupyter Notebook
 
-\item It must be really, trully, absolutely lazy! Perhaps reading Simon Peyton Jones 
+\item It must be really, truly, absolutely lazy! Perhaps reading Simon Peyton Jones 
 stuff will help with implementing a lazy evaluator.
+
+\item The first attempt is based on an implementation of the Core Language of Lester and Peyton Jones.
+
+\item While implementing the language, care must be taken not to modify the syntax with the sole purpose of simplifying the implementation.
+On the contrary, as the whole exercise is done only to learn about implementations, simplification will be counter-productive.
 
 \end{enumerate}
 
@@ -131,5 +136,33 @@ Migrated two txt files into a single tex file.
 I am now using git gui in stead of smartgit.
 My login credentials for github are stored in \verb|~/.git-credentials|.
 git gui will pick these up after executing \verb|git config credential.helper store| in the workspace directory.
+
+\paragraph{2019-02-04T12:15}
+Lester \& Peyton Jones describe a rather complicated pretty-printer.
+They justify this by a time-complexity argument.
+In many languages (Miranda, Haskell and Prospero among them) concatenation of strings is quadratic in the size of the left argument.
+As they prefer linear time-complexity (for good reasons!) they introduce this complex algorithm.
+However, reducing time-complexity comes at a price: the algorithm consumes a large amount of space (although still linear in the size of the program).
+
+Pretty-printing is a two-phase process: in the first phase the parse tree is transformed into a huge structure of IAppend, IString and INil nodes (and many others, as we will see later on).
+In the second phase, this structure is quite cleverly flattened to a string, indeed in linear time.
+
+However, this approach needs some critical evaluation:
+
+\begin{enumerate}
+\item The first phase builds a structure whic I will call the print graph, whose size is about an order of magnitude larger than the original parse tree.
+
+\item Quadratic time-complexity causes unacceptable execution times for larger programs.
+However, for small to mid-size programs on a fast machine, the difference between a fast quadratic algortihm and a slow linear one may be hardly noticable.
+
+\item Research shows that Python optimizes concatenation such that under the right circumstances this operation becomes linear.
+
+\item Maintenance of the two-phase algorithm is difficult, because changes have to be made at two places.
+The first phase is build into the nodes of the parse tree and the second phase is implemented as a method in the pretty printer module.
+
+\end{enumerate}
+
+Given these facts, there is no longer a justification for the complicated LPJ algorithm.
+However, implementing it was the only way to really understand it end without implementation the above criticism had never been exposed.
 
 \end{document}

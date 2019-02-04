@@ -26,7 +26,8 @@ class Prog(EProg):
     
   def pp(self, packed=False):
     sc = self.supercombinators
-    ppsc = ([ppr.IAppend(c.pp(), ppr.IStr(';\n')) for c in sc])
+    ppsc = ([ppr.append(c.pp(), ppr.IStr(';\n')) for c in sc[:-1]])
+    ppsc = ppsc + [sc[-1].pp()]
     return ppr.append(*ppsc)
 
 class Sc(ESc):
