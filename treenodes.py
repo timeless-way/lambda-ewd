@@ -79,7 +79,12 @@ class Let(ELet):
 class Case(ECase):
     
   def pp(self, packed=False):
-    return ppr.IStr('Case')
+    e = self.expr
+    alternatives = self.alts
+    ppalts = [alt.pp(packed) for alt in alternatives]
+    return ppr.append(
+        ppr.IWord('case'), e.pp(packed), ppr.IWord('of'), 
+        ppr.INewline(), *ppalts)
 
 class Lam(ELam):
     
