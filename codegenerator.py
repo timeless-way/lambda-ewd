@@ -39,6 +39,9 @@ class CodeGenerator:
   def c_case_expression(self, ast):
     return tn.Case(expr=ast['expr'], alts=ast['alts'])
 
+  def c_alternative_list(self, ast):
+    return self.remove_interpunction(ast, [";"])
+  
   def c_alternative(self, ast):
     return tn.Alt(tag=ast['tag'], vars=ast['vars'], expr=ast['expr'])
 

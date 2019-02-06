@@ -37,7 +37,7 @@ c_letrec_expression =
     ;
 
 c_case_expression =
-        'case' expr:c_expression 'of' alts:c_alternative_list
+        'case' expr:c_expression 'of' alts:c_alternative_list 'esac'
     ;
 
 c_lambda_expression = 
@@ -92,7 +92,7 @@ c_definition =
     ;
 
 c_alternative_list =
-        '[]'%{c_alternative}+
+        ';'%{c_alternative}+
     ;
 
 c_alternative =
@@ -120,7 +120,7 @@ c_parentheses =
     ;
 
 c_name =
-        !/let\W|letrec\W|in\W|case\W|of\W|Pack\W/
+        !/let\W|letrec\W|in\W|case\W|esac\W|of\W|Pack\W/
         /[a-zA-Z]([a-zA-Z0-9_])*/
     ;
 

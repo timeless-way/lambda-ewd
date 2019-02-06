@@ -1,4 +1,5 @@
 f x = case g x (h y) of
 <1> -> 1
-[] <2> y -> y
+; <2> y -> y
+esac
 

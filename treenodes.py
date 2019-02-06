@@ -81,10 +81,10 @@ class Case(ECase):
   def pp(self, packed=False):
     e = self.expr
     alternatives = self.alts
-    ppalts = [alt.pp(packed) for alt in alternatives]
-    return ppr.append(
-        ppr.IWord('case'), e.pp(packed), ppr.IWord('of'), 
-        ppr.INewline(), *ppalts)
+    first = ppr.append( ppr.IWord('case'), e.pp(packed), ppr.IWord('of'), ppr.INewline())
+    ppalts = ppr.IAppend(*[alt.pp(packed) for alt in alternatives])
+    last = ppr.append(ppr.INewline(), ppr.IWord('esac'))
+    return ppr.append(first, ppalts, last)
 
 class Lam(ELam):
     
@@ -94,5 +94,5 @@ class Lam(ELam):
 class Alt(EAlt):
     
   def pp(self, packed=False):
-    return ppr.IStr('Alt')
+    return ppr.IWord('Alt')
 

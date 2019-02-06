@@ -22,25 +22,24 @@ class IStr(_IStr):
   
   def flatten(self, worklist, context):
     head = self.contents
-    tail = flatten_tail(worklist, context)
+    tail = flatten_tail(worklist, context.false())
     return head + tail
 
 class IWord(_IWord):
 
   def flatten(self, worklist, context):
-    new_context = PrintContext(True, context.indent)
     head = self.contents
-    tail = flatten_tail(worklist, new_context)
+    tail = flatten_tail(worklist, context.true())
     if context.separator:
       s = ' '
     else:
       s = ''
-    return head + s + tail
+    return s + head + tail
   
 class INewline(_INewline):
     
   def flatten(self, worklist, context):
-    tail = flatten_tail(worklist, context)
+    tail = flatten_tail(worklist, context.false())
     margin = '\n{:>{width}}'.format('', width=context.indent)
     return margin + tail
 
@@ -54,6 +53,12 @@ class PrintContext():
   def __init__(self, separator, indent):
     self.separator = separator
     self.indent = indent
+    
+  def false(self):
+    return PrintContext(False, self.indent)
+  
+  def true(self):
+    return PrintContext(True, self.indent)
 
 def flatten_tail(worklist, context):
   if len(worklist) > 0:
@@ -71,7 +76,7 @@ def append(*contents):
     for c in contents[2:]:
       tree = IAppend(tree, c)
   return tree
-  
+
 def display(expr):
   context = PrintContext(False, 0)
   print_struct = expr.pp()
