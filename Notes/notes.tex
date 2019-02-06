@@ -8,7 +8,7 @@
 
 \begin{document}
 
-\title{Notes (on Structured Programming?)}
+\title{Notes\footnote{on Structured Programming?}}
 \author{Huub van Thienen}
 \maketitle
 
@@ -23,7 +23,7 @@
 \item 1984: Portable Logo
 \item 1994: First incarnation of Prospero
 \item 2007: Remake of Prospero in Java, using OO implemetation techniques
-\item 2018: EWD
+\item 2018: Lambda-EWD
 \end{list}
 
 \item After its creation in 2007, java-prospero has been substantially extended and 
@@ -41,7 +41,7 @@ ideas and try to collect them into a new consistent language.
 language technology:
 
 \begin{list}{}{}
-\item A: Python went from obsure scripting language to a mature mainstream language
+\item A: Python went from obscure scripting language to a mature mainstream language
 
 \item B: In the field of compiler construction packrat parsing and PEG grammars 
 became dominant.
@@ -49,7 +49,9 @@ became dominant.
 
 \item During development of Prospero 2 the focus has always been much more on language 
 design and implementation and much less on using the language (and not at all on 
-documenting the language). This will be the case during a new linguistic project as well. For that reason, there will be no attempt to produce a stand alone version of ewd, rather, only a few components will be provided that can be used in an iPython terminal or a Jupyter Notebook
+documenting the language). 
+This will be the case during a new linguistic project as well. 
+For that reason, there will be no attempt to produce a stand alone version of ewd, rather, only a few components will be provided that can be used in an iPython terminal or a Jupyter Notebook
 
 \item It must be really, truly, absolutely lazy! Perhaps reading Simon Peyton Jones 
 stuff will help with implementing a lazy evaluator.
@@ -96,23 +98,23 @@ Pass this instance to the Language constructor:
 \verb|Language(parser_instance=...)| \\
 or \verb|Language(grammar_file=...)|.
 
-\paragraph{NOTE (2018-06-16):} In order for this to work, the start rule of the grammer \textbf{must} be called \verb|start|. 
+\paragraph{NOTE (2018-06-16):} In order for this to work, the start rule of the grammar \textbf{must} be called \verb|start|. 
 Although there are several ways tot specify another start rule in Tatsu, none of these seemed to work. 
 This might be a bug in Tatsu. 
 However, the workaround is easy, just declare a rule \verb|"start = c_program $"| and change to \verb|"c_program = c_combinator_list"| (without the \$) and you're done.
 
 \paragraph{2018-04-17T23:00}
 
-The Core grammer had to be modified in three dfferent ways to make it compatible with tatsu PEG requirements:
+The Core grammar had to be modified in three different ways to make it compatible with tatsu PEG requirements:
 
 \begin{enumerate}
 
-\item The Lester grammar as given in Lester is ambiguous, as the semicolon in the rule 
-\verb|alts -> alt1 ';' ... ';' altn|
+\item The Lester grammar is ambiguous, as the semicolon in the rule \\
+\verb|alts -> alt1 ';' ... ';' altn| \\
 is indistinguishable from the one between super combinators:\\
 \verb|program -> sc1 ';' ... ';' scn|.
 
-This anbiguity can besolved in various ways, I have chosen to modify the lexical structure by replacing the semicolon between alterbatives by the Dijkstra block \verb|[]|.
+This ambiguity can be solved in various ways, I have chosen to modify the lexical structure by explicitly closing the list of alternatives by a new keyword \verb+esac+.
 
 \item The Lester grammar is incomplete as it only specifies the precedence of infix operators in a table. This precedence structure has to be expanded into the grammar rules, giving rise to no less than 8 additional rules.
 
@@ -121,12 +123,12 @@ This anbiguity can besolved in various ways, I have chosen to modify the lexical
 where each expansion is a sequence of (non)terminals must be rewritten into the following form:
 
 \begin{Verbatim}
-lhs -> nonterminal-1 | nonterminal-2 | nonterminal-3;
-nonterminal-1 = rhs-expansion-1;
-nonterminal-2 = rhs-expansion-2;
-nonterminal-3 = rhs-expansion-3;|
+lhs -> non-terminal-1 | non-terminal-2 | non-terminal-3;
+non-terminal-1 = rhs-expansion-1;
+non-terminal-2 = rhs-expansion-2;
+non-terminal-3 = rhs-expansion-3;|
 \end{Verbatim}
-where each nonterminal-i is a new nonterminal, not occuring in the original grammar.
+where each non-terminal-i is a new non-terminal, not occuring in the original grammar.
 \end{enumerate}
 
 \paragraph{2019-01-27T23:09}
@@ -150,10 +152,10 @@ In the second phase, this structure is quite cleverly flattened to a string, ind
 However, this approach needs some critical evaluation:
 
 \begin{enumerate}
-\item The first phase builds a structure whic I will call the print graph, whose size is about an order of magnitude larger than the original parse tree.
+\item The first phase builds a structure which I will call the print graph, whose size is about an order of magnitude larger than the original parse tree.
 
 \item Quadratic time-complexity causes unacceptable execution times for larger programs.
-However, for small to mid-size programs on a fast machine, the difference between a fast quadratic algortihm and a slow linear one may be hardly noticable.
+However, for small to mid-size programs on a fast machine, the difference between a fast quadratic algorithm and a slow linear one may be hardly noticeable.
 
 \item Research shows that Python optimizes concatenation such that under the right circumstances this operation becomes linear.
 
