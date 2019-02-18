@@ -25,15 +25,18 @@ EAlt    = collections.namedtuple('EAlt', 'tag vars expr')
 class Prog(EProg):
     
   def pp(self, packed=False):
-    sc = self.supercombinators
-    ppsc = ([ppr.append(c.pp(), ppr.IStr(';\n')) for c in sc[:-1]])
-    ppsc = ppsc + [sc[-1].pp()]
-    return ppr.append(*ppsc)
+    combinator_list = []
+    for combinator in self.supercombinators:
+      combinator_list = combinator_list + [combinator.pp()]
+    seq1 = ppr.ISequence(combinator_list)
+    nl = ppr.IStr(';\n')
+    seq2 = seq1.join(nl)
+    return seq2
 
 class Sc(ESc):
     
   def pp(self, packed=False):
-    return ppr.append(self.lhs.pp(), ppr.IWord('='), self.expr.pp())
+    return ppr.sequence(self.lhs.pp(), ppr.IWord('='), self.expr.pp())
 
 class Lhs(ELhs):
     
@@ -42,12 +45,15 @@ class Lhs(ELhs):
       return ppr.IWord(self.name)
     else:
       parlist = [ppr.IWord(par) for par in self.pars]
-      return ppr.IAppend(ppr.IWord(self.name), ppr.append(*parlist))
+      return ppr.sequence(ppr.IWord(self.name), ppr.ISequence(parlist))
 
 class Bind(EBind):
     
   def pp(self, packed=False):
-    return ppr.IStr('Bind')
+    _name = self.name.pp(packed)
+    _eq = ppr.IWord('=')
+    _val = self.val.pp(packed)
+    return ppr.sequence(_name, _eq, _val)
    
 class Var(EVar):
     
@@ -69,30 +75,61 @@ class Ap(EAp):
   def pp(self, packed=False):
     pre = ppr.IStr('(') if packed else ppr.INil()
     post = ppr.IStr(')') if packed else ppr.INil()
-    return ppr.append(pre, self.fun.pp(False), self.arg.pp(True), post)
+    return ppr.sequence(pre, self.fun.pp(False), self.arg.pp(True), post)
 
 class Let(ELet):
     
   def pp(self, packed=False):
-    return ppr.IStr('Let')
+    _ob = ppr.IOpenBlock()
+    _cb = ppr.ICloseBlock()
+    _nl = ppr.INewline()
+    
+    _let = ppr.IWord('letrec') if self.isRec else ppr.IWord('let')
+    _in = ppr.IWord('in')
+    
+    _definitions = self.pp_definitions(self.deflist, packed)
+    pp_expr = self.expr.pp(packed)
+    return ppr.sequence(_ob, _let, _ob, _definitions, _cb, _in, pp_expr, _cb)
+  
+  def pp_definitions(self, definitions, packed):
+    _nl = ppr.sequence(ppr.IStr(';'), ppr.INewline())
+    defs = ppr.ISequence([definition.pp(packed) for definition in definitions])
+    return defs.join(_nl)
 
 class Case(ECase):
     
   def pp(self, packed=False):
-    e = self.expr
-    alternatives = self.alts
-    first = ppr.append( ppr.IWord('case'), e.pp(packed), ppr.IWord('of'), ppr.INewline())
-    ppalts = ppr.IAppend(*[alt.pp(packed) for alt in alternatives])
-    last = ppr.append(ppr.INewline(), ppr.IWord('esac'))
-    return ppr.append(first, ppalts, last)
-
+    _ob = ppr.IOpenBlock()
+    _cb = ppr.ICloseBlock()
+    
+    _case = ppr.IWord('case')
+    _of = ppr.IWord('of')
+    _esac = ppr.IWord('esac')
+    
+    pp_expr = self.expr.pp(packed)
+    alternatives = self.pp_alts(self.alts, packed)
+    pp_alts = ppr.sequence(_ob, alternatives, _cb)
+    return ppr.sequence(_ob, _case, pp_expr, _of, pp_alts, _esac, _cb)
+  
+  def pp_alts(self, alternatives, packed):
+    alts = ppr.ISequence([alt.pp(packed) for alt in alternatives])
+    nl = ppr.sequence(ppr.IStr(';'), ppr.INewline())
+    return alts.join(nl)
+  
 class Lam(ELam):
     
   def pp(self, packed=False):
-    return ppr.IStr('Lam')
+    _lambda = ppr.IStr('\\')
+    _dot = ppr.IStr('.')
+    _par = self.par.pp(packed)
+    _body = self.body.pp(packed)
+    return ppr.sequence(_lambda, _par, _dot, _body)
 
 class Alt(EAlt):
     
   def pp(self, packed=False):
-    return ppr.IWord('Alt')
+    tag = ppr.sequence(ppr.IStr('<'), self.tag.pp(packed), ppr.IStr('> '))
+    varlist = [var.pp(packed) for var in self.vars]
+    expr = self.expr.pp(packed)
+    return ppr.sequence(tag, ppr.ISequence(varlist), ppr.IWord('->'), expr)
 

@@ -1,5 +1,15 @@
-f x = case g x (h y) of
-<1> -> 1
-; <2> y -> y
-esac
+f x = case x of 
+<1> a -> 10; 
+<2> a b -> 20 
+esac;
 
+g y = let x = 1 in 3*x;
+
+h a b = case a of
+<1> x -> case x of 
+          <1> a -> a; 
+          <2> a b -> f a b 
+         esac;
+<2> x y -> let k = x+y; j = x in x;
+<3> x -> 2
+esac
