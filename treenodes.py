@@ -9,6 +9,8 @@ Created on Wed Jun  6 16:33:57 2018
 import collections
 import prettyprinter as ppr
 
+from abc import ABC, abstractmethod
+
 EProg   = collections.namedtuple('EProg', 'supercombinators')
 ESc     = collections.namedtuple('ESc', 'lhs expr')
 ELhs    = collections.namedtuple('ELhs', 'name pars')
@@ -22,7 +24,13 @@ ECase   = collections.namedtuple('ECase', 'expr alts')
 ELam    = collections.namedtuple('ELam', 'par body')
 EAlt    = collections.namedtuple('EAlt', 'tag vars expr')
 
-class Prog(EProg):
+class TreeNode(ABC):
+  
+  @abstractmethod
+  def pp(self, packed=False):
+    return ppr.IWord('No method pp defined for ' + str(type(self)))
+
+class Prog(TreeNode, EProg):
     
   def pp(self, packed=False):
     combinator_list = []
@@ -33,12 +41,12 @@ class Prog(EProg):
     seq2 = seq1.join(nl)
     return seq2
 
-class Sc(ESc):
+class Sc(TreeNode, ESc):
     
   def pp(self, packed=False):
     return ppr.sequence(self.lhs.pp(), ppr.IWord('='), self.expr.pp())
 
-class Lhs(ELhs):
+class Lhs(TreeNode, ELhs):
     
   def pp(self, packed=False):
     if len(self.pars) == 0:
@@ -47,7 +55,7 @@ class Lhs(ELhs):
       parlist = [ppr.IWord(par) for par in self.pars]
       return ppr.sequence(ppr.IWord(self.name), ppr.ISequence(parlist))
 
-class Bind(EBind):
+class Bind(TreeNode, EBind):
     
   def pp(self, packed=False):
     _name = self.name.pp(packed)
@@ -55,29 +63,35 @@ class Bind(EBind):
     _val = self.val.pp(packed)
     return ppr.sequence(_name, _eq, _val)
    
-class Var(EVar):
+class Var(TreeNode, EVar):
     
   def pp(self, packed=False):
     return ppr.IWord(self.ident)
 
-class Num(ENum):
+class Num(TreeNode, ENum):
     
   def pp(self, packed=False):
     return ppr.IWord(str(self.intVal))
 
-class Constr(EConstr):
+class Constr(TreeNode, EConstr):
     
   def pp(self, packed=False):
-    return ppr.IStr('Constr')
+    _tag = self.tag.pp(packed)
+    _arity = self.arity.pp(packed)
+    _pack = ppr.IStr(' Pack')
+    _lbrace = ppr.IStr('{')
+    _rbrace = ppr.IStr('}')
+    _comma = ppr.IStr(', ')
+    return ppr.sequence(_pack, _lbrace, _tag, _comma, _arity, _rbrace)
 
-class Ap(EAp):
+class Ap(TreeNode, EAp):
     
   def pp(self, packed=False):
     pre = ppr.IStr('(') if packed else ppr.INil()
     post = ppr.IStr(')') if packed else ppr.INil()
     return ppr.sequence(pre, self.fun.pp(False), self.arg.pp(True), post)
 
-class Let(ELet):
+class Let(TreeNode, ELet):
     
   def pp(self, packed=False):
     _ob = ppr.IOpenBlock()
@@ -96,7 +110,7 @@ class Let(ELet):
     defs = ppr.ISequence([definition.pp(packed) for definition in definitions])
     return defs.join(_nl)
 
-class Case(ECase):
+class Case(TreeNode, ECase):
     
   def pp(self, packed=False):
     _ob = ppr.IOpenBlock()
@@ -116,7 +130,7 @@ class Case(ECase):
     nl = ppr.sequence(ppr.IStr(';'), ppr.INewline())
     return alts.join(nl)
   
-class Lam(ELam):
+class Lam(TreeNode, ELam):
     
   def pp(self, packed=False):
     _lambda = ppr.IStr('\\')
@@ -125,7 +139,7 @@ class Lam(ELam):
     _body = self.body.pp(packed)
     return ppr.sequence(_lambda, _par, _dot, _body)
 
-class Alt(EAlt):
+class Alt(TreeNode, EAlt):
     
   def pp(self, packed=False):
     tag = ppr.sequence(ppr.IStr('<'), self.tag.pp(packed), ppr.IStr('> '))
