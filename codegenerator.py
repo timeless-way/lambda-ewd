@@ -132,10 +132,10 @@ def is_atomic(expr):
   return (isinstance(expr, tn.Var) or isinstance(expr, tn.Num))
 
 def left_hand_sides(program):
-  return [sc.lhs for sc in program.ast]
+  return [sc.lhs for sc in program.ast.supercombinators]
 
 def expressions(program):
-  return [sc.expr for sc in program.ast]
+  return [sc.expr for sc in program.ast.supercombinators]
 
 def names(program):
   return [lhs.name for lhs in left_hand_sides(program)]

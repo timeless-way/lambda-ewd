@@ -51,6 +51,8 @@ class INewline(_ISeq, _INil):
 class ISequence(_ISeq, _ISequence):
   
   def flatten(self, worklist, context):
+    if len(self.contents) == 0:
+      return flatten_tail(worklist, context)
     head = self.contents[0]
     tail = self.contents[1:] 
     return head.flatten(tail + worklist, context)

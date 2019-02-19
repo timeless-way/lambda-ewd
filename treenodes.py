@@ -33,13 +33,10 @@ class TreeNode(ABC):
 class Prog(TreeNode, EProg):
     
   def pp(self, packed=False):
-    combinator_list = []
-    for combinator in self.supercombinators:
-      combinator_list = combinator_list + [combinator.pp()]
-    seq1 = ppr.ISequence(combinator_list)
-    nl = ppr.IStr(';\n')
-    seq2 = seq1.join(nl)
-    return seq2
+    combinator_list = [combinator.pp() for combinator in self.supercombinators]
+    _seq = ppr.ISequence(combinator_list)
+    _nl = ppr.sequence(ppr.IStr(';'), ppr.INewline())
+    return _seq.join(_nl)
 
 class Sc(TreeNode, ESc):
     
@@ -121,11 +118,11 @@ class Case(TreeNode, ECase):
     _esac = ppr.IWord('esac')
     
     pp_expr = self.expr.pp(packed)
-    alternatives = self.pp_alts(self.alts, packed)
+    alternatives = self.pp_alternatives(self.alts, packed)
     pp_alts = ppr.sequence(_ob, alternatives, _cb)
     return ppr.sequence(_ob, _case, pp_expr, _of, pp_alts, _esac, _cb)
   
-  def pp_alts(self, alternatives, packed):
+  def pp_alternatives(self, alternatives, packed):
     alts = ppr.ISequence([alt.pp(packed) for alt in alternatives])
     nl = ppr.sequence(ppr.IStr(';'), ppr.INewline())
     return alts.join(nl)
